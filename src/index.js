@@ -89,8 +89,24 @@ app.post('/livros', (req, res, next) => {
 app.put('/livros', (req, res, next) => {
     livros.forEach((livro) => {
         if (livro.id === req.body.id){
-            livro.edicao = req.body.descricao;
+            livro.edicao = req.body.edicao;
         }
     });
     res.status(204).end();
+});
+
+
+app.delete('/livros/:id', (req, res, next) => {
+    var existe = false;
+    livros.forEach((livro, index) => {
+        if (livro.id == req.params.id){
+            livros.splice(index, 1);
+            existe = true;
+        }
+    });
+    if (existe){
+        res.status(200).json(livros);    
+    } else{
+        res.status(404).json("Não foi encontrado livro com o id: "+ req.params.id);
+    }   
 });
