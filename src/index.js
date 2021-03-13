@@ -58,14 +58,16 @@ let livros = [
         titulo: 'Introdução programação Java',
         descricao: 'Ensinamentos a linguagem java para iniciantes',
         edicao: 1,
-        autor: 'João'
+        autor: 'João',
+        valor: 'aaaa'
     },
     {
         id: 2,
         titulo: 'Código Limpo',
         descricao: 'Guiará a tornar seu código uma estória',
         edicao: 3,
-        autor: 'Maria'
+        autor: 'Maria',
+        valor: 'aaaa'
     }
 ]
 
@@ -85,16 +87,29 @@ app.post('/livros', (req, res, next) => {
     res.status(201).json(livro);
 });
 
-// Por hora put altera somente a edição do livro
-app.put('/livros', (req, res, next) => {
-    livros.forEach((livro) => {
-        if (livro.id === req.body.id){
-            livro.edicao = req.body.edicao;
+function estaVazio(req, valor) {
+    valor.forEach((item) => {
+        if (req.body.item == null){
+            valor.splice(item, 1);
         }
     });
-    res.status(204).end();
-});
+    return valor;
+}
 
+
+// Por hora put altera somente a edição do livro
+app.put('/livros', (req, res, next) => {
+    var valores = ['titulo', 'descricao', 'edicao', 'autor'];
+    valores = estaVazio(req, valores);
+    livros.forEach((livro) => {
+        if (livro.id === req.body.id){
+            valores.forEach((valor) => {
+                livro[valor] = req.body[valor];
+            });
+        }
+    });
+    res.status(200).json(valores);
+});
 
 app.delete('/livros/:id', (req, res, next) => {
     var existe = false;
